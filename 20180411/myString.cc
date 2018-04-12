@@ -67,8 +67,9 @@ int main(){
 	String str4 = str3;
 	str4.print();
 
-	str4 = str2;
-	str4.print();
+	String str5;
+	str5 = str2;
+	str5.print();
 
 	return 0;
 }
