@@ -1,0 +1,4 @@
+[2018-04-20 19:24:20,437] [  INFO] [testlog4cpp.cc:main:10]:Are you OK?
+[2018-04-20 19:24:20,437] [  WARN] [testlog4cpp.cc:main:11]:Can you see number 7?
+[2018-04-20 19:24:34,898] [  INFO] [testlog4cpp.cc:main:10]:Are you OK?
+[2018-04-20 19:24:34,899] [  WARN] [testlog4cpp.cc:main:11]:Can you see number 7?
