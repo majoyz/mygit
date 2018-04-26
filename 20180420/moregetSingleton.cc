@@ -73,7 +73,7 @@ class Singleton{
 		template <typename... Args>
 			static T * getInstance(Args... args){
 				if(_pInstance == NULL){
-					_auto;
+					_auto;//这里为什么需要实例化？和typename有关吗？
 					_pInstance = new T(args...);
 				}
 				return _pInstance;
