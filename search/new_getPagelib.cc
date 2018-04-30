@@ -13,18 +13,12 @@
 #include <string>
 #include <vector>
 #include <fstream>
-using std::cout;
-using std::endl;
-using std::string;
-using std::vector;
-using std::ifstream;
-using std::ofstream;
+using namespace std;
 using namespace tinyxml2;
-using std::regex;
 
 #define OPATH "pagelib.dat"
 
-struct RssItem
+struct RssItem//要整理成的格式
 {
 	string title;
 	string link;
@@ -49,7 +43,6 @@ class RssReader
 void RssReader::parseRss(const char * arg){//解析
 	XMLDocument doc;
 	string tmp;
-	string tmpdes1,tmpdes2;
 	regex r("<.{0,999}>");
 	regex re("&.{0,99};");
 	struct RssItem tmpst;
@@ -66,21 +59,26 @@ void RssReader::parseRss(const char * arg){//解析
 	XMLElement* everynode;
 	while(docone){
 		everynode = docone->FirstChildElement("title");
-		tmp = everynode->GetText();
-		tmpst.title = tmp;
+		if(everynode){
+			tmp = everynode->GetText();
+			tmpst.title = tmp;
+		}
 		everynode = docone->FirstChildElement("link");
-		tmp = everynode->GetText();
-		tmpst.link = tmp;
+		if(everynode){
+			tmp = everynode->GetText();
+				tmpst.link = tmp;
+		}
 		everynode = docone->FirstChildElement("description");
-		tmpdes1 = everynode->GetText();
-		tmpdes2 = regex_replace(tmpdes1,r,"");
-		tmp = regex_replace(tmpdes2,re,"");
-		tmpst.description = tmp;
+		if(everynode){
+			tmp = everynode->GetText();
+			tmp = regex_replace(tmp,r,"");
+			tmp = regex_replace(tmp,re,"");
+			tmpst.description = tmp;
+		}
 		everynode = docone->FirstChildElement("content");
 		if(everynode){
 			tmp = everynode->GetText();
-			cout << tmp << endl;
-			_rss[i].content = tmp;
+				tmpst.content = tmp;
 		}
 		_rss.push_back(tmpst);
 		++i;
@@ -129,6 +127,12 @@ void RssReader::dump(){//输出
 }
 
 int creatXML(const char * xmlPath){
+	fstream fs;
+	fs.open(xmlPath);
+	if(fs)
+		return 0;
+	else
+		fs.close();
 	const char* declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	XMLDocument doc;
 	doc.Parse(declaration);
