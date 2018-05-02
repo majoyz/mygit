@@ -4,6 +4,8 @@
 /// @date    2018-04-30 15:27:43
 ///
 
+#include <stdio.h>
+#include <string.h>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -13,6 +15,16 @@
 #include <set>
 #include <memory>
 using namespace std;
+
+struct FileCloser{
+	void operator()(FILE * fp){
+		if(fp){
+			fclose(fp);
+			cout << "fclose(fp)" << endl;
+		}
+		return;
+	}
+};
 
 class TextQuery
 {
@@ -39,9 +51,9 @@ int getOnlyWord(string & oword){//单词处理函数
 		if(olen==0)
 			return -1;
 	}
-//	if(oword[0]>64&&oword[0]<91){//大写处理
-//		oword[0] += 32;
-//	}
+	//	if(oword[0]>64&&oword[0]<91){//大写处理
+	//		oword[0] += 32;
+	//	}
 	return 0;
 }
 
@@ -49,8 +61,14 @@ void TextQuery::readFile(const string filename){//读取文件
 	int num_line = 0;
 	string line;
 	string word;
-	ifstream ifs(filename);
-	while(getline(ifs,line)){
+	char cline[4096] = {0};
+	shared_ptr<FILE> spf(fopen(filename.c_str(),"r+"),FileCloser());
+	if(spf.get() == NULL){
+		cout << "no such file" << endl;
+		return;
+	}
+	while(fgets(cline,4095,spf.get())){
+		line = cline;
 		_lines.push_back(line);//存储文章的每一行
 		stringstream ss;
 		ss << line;
@@ -62,7 +80,8 @@ void TextQuery::readFile(const string filename){//读取文件
 			_dict[word]++;//存储单词词频
 			_word2Line[word].insert(num_line);//存储单词的每一个所在行
 		}
-		num_line++;
+		++num_line;
+		bzero(cline,4096);
 	}
 }
 
@@ -70,7 +89,7 @@ void TextQuery::query(const string & word){//单词查询
 	cout << word << " occurs " << _dict[word] << " times." << endl;
 	set<int>::iterator st = _word2Line[word].begin();
 	while(st != _word2Line[word].end()){
-		cout << "(line " << *st+1 << ") " << _lines[*st] << endl;
+		cout << "(line " << *st+1 << ") " << _lines[*st];
 		st++;
 	}
 }
@@ -80,9 +99,10 @@ int main(int argc,char * argv[]){
 		cout << "query word" << endl;
 		return -1;
 	}
-	unique_ptr<TextQuery> sptq(new TextQuery());
-	sptq -> readFile("china_daily.txt");
-	sptq -> query(argv[1]);
+
+	TextQuery tq;
+	tq.readFile("china_daily.txt");
+	tq.query(argv[1]);
 
 	return 0;
 }
