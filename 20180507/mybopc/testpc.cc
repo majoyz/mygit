@@ -55,8 +55,9 @@ class Consumer
 int main(){
 
 	TaskQueue taskQue(5);
-	unique_ptr<Thread> producer(new Thread(std::bind(&Producer::producer,Producer(),std::ref(taskQue))));
-	unique_ptr<Thread> consumer(new Thread(std::bind(&Consumer::consumer,Consumer(),std::ref(taskQue))));
+	unique_ptr<Thread> producer(new Thread(std::bind(&Producer::producer,Producer(),std::ref(taskQue))));//二参数临时对象，复制开销小没事
+	unique_ptr<Thread> consumer(new Thread(std::bind(&Consumer::consumer,Consumer(),std::ref(taskQue))));//this指针或临时对象都可以，灵活
+	//如果传this指针，要保证其生命周期的完整
 	producer->start();
 	consumer->start();
 	producer->join();

@@ -10,17 +10,17 @@
 #include "Mutex.h"
 #include "Condition.h"
 #include <queue>
+#include <functional>
 namespace wd{
-	class Task;
 	class TaskQueue{
 		public:
-			using Type = Task *;
+			using Type = std::function<void()>;
 			TaskQueue(size_t quesize);
 
 			bool full() const;
 			bool empty() const;
 
-			void push(Type & type);
+			void push(Type && type);
 			Type pop();
 			void wakeup();
 		private:

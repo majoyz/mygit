@@ -37,7 +37,7 @@ class Producer
 			}
 		}
 	private:
-		TaskQueue & _taskQue;
+		TaskQueue & _taskQue;//run已经写死了，只能放进来作为成员
 };
 
 class Consumer

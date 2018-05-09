@@ -24,12 +24,12 @@ bool TaskQueue::empty() const{
 	return _que.size() == 0;
 }
 
-void TaskQueue::push(Type & type){
+void TaskQueue::push(Type && type){
 	AutoMutex autolock(_mutex);
 	while(full()){
 		_notfull.wait();
 	}
-	_que.push(type);
+	_que.push(std::move(type));
 	_notempty.notify();
 }
 

@@ -6,13 +6,12 @@
  
 #ifndef __WD_THREAD_H__
 #define __WD_THREAD_H__
-#include <functional>
+#include "Noncopyable.h"
 #include <pthread.h>
 namespace wd{
 	class Thread{
 		public:
-			typedef std::function<void()> ThreadCallBack;
-			Thread(ThreadCallBack && tcb);//右值引用
+			Thread();
 			~Thread();
 
 			void start();
@@ -21,11 +20,11 @@ namespace wd{
 				return _isRunning;
 			}
 		private:
+			virtual void run() = 0;
 			static void * threadFunc(void * arg);
 		private:
 			pthread_t _pthid;
 			bool _isRunning;
-			ThreadCallBack _tcb;
 	};
 }
 #endif

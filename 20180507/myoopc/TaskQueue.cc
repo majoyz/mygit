@@ -38,5 +38,6 @@ TaskQueue::Type TaskQueue::pop(){
 	}
 	Type tmp = _que.front();
 	_que.pop();
+	_notfull.notify();//有可能发生异常，唤醒多个线程，所以上面要用while而非if
 	return tmp;
 }
