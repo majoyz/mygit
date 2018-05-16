@@ -14,7 +14,7 @@ void Mydict::init(const char * dictEnPath,const char * indexEnPath){
 	string aline;
 	string aword;
 	int afrequent;
-	while(getline(defs,aline)){
+	while(getline(defs,aline)){//vector词典
 		istringstream sline(aline);
 		sline >> aword;
 		sline >> afrequent;
@@ -24,9 +24,9 @@ void Mydict::init(const char * dictEnPath,const char * indexEnPath){
 	string numline;
 	string tmpnull;
 	int linenum;
-	while(true){
-		getline(iefs,aword);
-		getline(iefs,numline);
+	while(getline(iefs,aword),getline(iefs,numline)){//index索引
+//		getline(iefs,aword);
+//		getline(iefs,numline);
 		istringstream snumline(numline);
 		while(snumline >> linenum){
 			_index_table[aword].insert(linenum);

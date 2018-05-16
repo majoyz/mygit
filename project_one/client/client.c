@@ -47,11 +47,16 @@ void do_service(int sockfd)
     while(1)
     {
         fgets(sendbuf, sizeof sendbuf, stdin);
+		for(int i = 0;i<1024;++i){
+			if(sendbuf[i] == '\n'){
+				sendbuf[i] = 0;
+				break;
+			}
+		}
         write(sockfd, sendbuf, strlen(sendbuf));//发送查询词
 
         //read
         int nread = read(sockfd, recvbuf, sizeof recvbuf);
-		//这里receive的不是buf了，得改一下
         if(nread == -1)
         {
             if(errno == EINTR)
