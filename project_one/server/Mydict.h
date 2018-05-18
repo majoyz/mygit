@@ -18,6 +18,15 @@
 using namespace std;
 
 class Mydict{
+	class AutoRelease{
+		public:
+			AutoRelease(){}
+			~AutoRelease(){
+				if(_getclass){
+					delete _getclass;
+				}
+			}
+	};
 	public:
 		static Mydict * createInstance(){
 			if(_getclass == NULL){
@@ -25,12 +34,14 @@ class Mydict{
 			}
 			return _getclass;
 		}
-		void init(const char * dictEnPath,const char * dictCnPath);
+		void init(const char *,const char *,const char *,const char *);
 		vector<pair<string,int>> & getDict();
 		unordered_map<string,set<int>> & getIndexTable();
 	private:
 		Mydict();
+		~Mydict();
 		static Mydict * _getclass;
+		static AutoRelease _auto;
 		vector<pair<string,int>> _dict;
 		unordered_map<string,set<int>> _index_table;
 };

@@ -30,13 +30,27 @@ int getOnlyWord(string & oword){//单词处理函数
 	return 0;
 }
 
-TextQuery::TextQuery(string &dictfile,string &indexfile)//字典类构造函数
+int getOnlyCn(string & oword){
+	int olen = oword.size();
+	if(olen%3)
+		return -1;//暂时通过3的倍数让后面的能用
+	return 0;
+}
+
+DictProducer::DictProducer(string &dictfile,string &indexfile)//字典类构造函数
 : _file(new vector<string>)
 , _dictfile(dictfile)
 , _indexfile(indexfile)
 {}
 
-void TextQuery::addBinTxt(ifstream &ifile){
+DictProducer::DictProducer(string &dictfile,string &indexfile,SplitTool *st)//字典类构造函数
+: _file(new vector<string>)
+, _dictfile(dictfile)
+, _indexfile(indexfile)
+,_splitTool(st)
+{}
+
+void DictProducer::makeDict(ifstream &ifile){
 	string textline;
 	int ret;
 	int ceshi = 0;
@@ -47,12 +61,12 @@ void TextQuery::addBinTxt(ifstream &ifile){
 		istringstream line(textline);//将行文本分解为单词
 		string word;
 		while(line >> word){//对行重的每个单词
-			ret = getOnlyWord(word);
+			ret = getOnlyWord(word);//单词处理函数
 			if(ret == -1)
 				continue;
-			auto &_lines = wm[word];//_lines是一个shared_ptr
+			auto &_lines = _wm[word];//_lines是一个shared_ptr
 			if(!_lines){//第一次遇到这个单词，指针为空
-				_lines.reset(new set<line_no>);//分配一个新set
+				_lines.reset(new set<unsigned int>);//分配一个新set
 			}
 			++_dict[word];
 			_lines->insert(n);//将此行号插入set中
@@ -61,10 +75,27 @@ void TextQuery::addBinTxt(ifstream &ifile){
 		if(!(ceshi%1000))
 			cout << ceshi << endl;
 	}
-	cout << "Text finish" << endl;
 }
 
-void TextQuery::makeDict(){//输出词典文件
+void DictProducer::make_cn_Dict(ifstream &ifile){
+	string textline;
+	string word;
+	int ret;
+	vector<string> tmpForLine;
+	SplitTool *st = new SplitToolCppJieba;
+	while(getline(ifile,textline)){
+		istringstream line(textline);
+		tmpForLine = st->cut(textline);
+		for(auto every : tmpForLine){
+			ret = getOnlyCn(every);
+			if(ret == -1)
+				continue;
+			++_dict_cn[every];
+		}
+	}
+}
+
+void DictProducer::dictFile(){//输出词典文件
 	ofstream ofs(_dictfile,std::ios::app);
 	for(auto & mywords : _dict){
 		ofs << mywords.first << " " << mywords.second << endl;
@@ -73,24 +104,21 @@ void TextQuery::makeDict(){//输出词典文件
 	ofs.close();
 }
 
-void TextQuery::makeQDict(){//建立vector词典
-	auto it = _dict.begin();
-	while(it!=_dict.end()){
-		_qdict.push_back(*it);
-		++it;
+void DictProducer::dict_cn_File(){//输出词典文件
+	ofstream ofs(_dictfile,std::ios::app);
+	for(auto & mywords : _dict_cn){
+		ofs << mywords.first << " " << mywords.second << endl;
 	}
+	cout << "dic_cn finish" << endl;
+	ofs.close();
 }
 
-vector<pair<string,int>> & TextQuery::get_qdict(){//返回vector词典
-	return _qdict;
-}
-
-void TextQuery::makeIndex(){//建立索引
-	auto it = _qdict.begin();
+void DictProducer::makeIndex(){//建立索引
+	auto it = _dict.begin();
 	string tmp;
 	string ctmp;
 	int dictnum = 0;
-	while(it!=_qdict.end()){
+	while(it!=_dict.end()){
 		tmp = (*it).first;
 		for(unsigned long i = 0;i<tmp.size();i++){
 			ctmp = tmp[i];
@@ -98,11 +126,39 @@ void TextQuery::makeIndex(){//建立索引
 		}
 		++dictnum;
 		++it;
-		cout << "finish" << ctmp << endl;
 	}
 }
 
-void TextQuery::indexFile(){//输出索引文件
+void DictProducer::make_cn_Index(){//建立中文索引
+	auto it = _dict_cn.begin();
+	string tmp;
+	string ctmp;
+	int dictnum = 0;
+	while(it!=_dict_cn.end()){
+		tmp = (*it).first;
+		cout << "tmp = " << tmp << endl;
+		for(unsigned long i = 0;i<tmp.size();i+=3){
+			ctmp = tmp.substr(i,3);
+			cout << "ctmp = " << ctmp << endl;
+			_index[ctmp].insert(dictnum);
+		}
+		++dictnum;
+		++it;
+	}
+}
+
+void DictProducer::indexFile(){//输出中文索引文件
+	ofstream ofs(_indexfile);
+	for(auto every : _index){
+		ofs << every.first << endl;
+		for(auto everynum : every.second){
+			ofs << everynum << " ";
+		}
+		ofs << endl;
+	}
+}
+
+void DictProducer::index_cn_File(){//输出索引文件
 	ofstream ofs(_indexfile);
 	for(auto every : _index){
 		ofs << every.first << endl;

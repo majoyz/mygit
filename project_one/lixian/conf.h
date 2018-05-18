@@ -4,6 +4,9 @@
  /// @date    2018-05-14 11:02:41
  ///
  
+#ifndef __WD_CONF_H__
+#define __WD_CONF_H__
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -18,3 +21,5 @@ class Configuration{
 		string _filepath;
 		map<string,string> _configMap;
 };
+
+#endif

@@ -9,73 +9,156 @@
 #include <iterator>
 #include <cstdlib>
 #include <cstring>
+#include <hiredis/hiredis.h>//redis C接口库
 using std::cout;
 using std::endl;
 
-int mymin(int a,int b,int c){
-	if(a<=b&&a<=c)
-		return a;
-	else if(b<=a&&b<=c)
-		return b;
-	else
-		return c;
-}
+int edit_length(string &x, string &y){ //秒查的最小编辑距离算法 
+	if(x[0]>96&&x[0]<123){//英文
+		int xlen = x.length();  
+		int ylen = y.length();  
+		int edit[3][30+1];  
+		memset(edit, 0, sizeof(edit));  
 
-int getmed(int tsize,int ssize,string &target,string &source){
-	if(tsize == 0)
-		return ssize;
-	else if(ssize == 0)
-		return tsize;
-	return mymin(getmed(tsize-1,ssize,target,source)+1
-			,getmed(tsize-1,ssize-1,target,source)+(target[tsize-1]==source[ssize-1]?0:2)
-			,getmed(tsize,ssize-1,target,source)+1);
-}
-
-int Min_Edit_Distance(string target,string source){
-	int tsize = target.size();
-	int ssize = source.size();
-	int ret = getmed(tsize,ssize,target,source);
-	return ret;
-}
-//
-int edit_length(string &x, string &y){  
-	int xlen = x.length();  
-	int ylen = y.length();  
-	int edit[3][30+1];  
-	memset(edit, 0, sizeof(edit));  
-
-	int i = 0;  
-	int j = 0;  
-	for(j = 0; j <= ylen; j++){  
-		edit[0][j] = j;  
-	}  
-	for(i = 1; i <= xlen; i++){  
-		edit[i%3][0] = edit[(i-1)%3][0] + 1;  
-		for(j = 1; j <= ylen; j++){  
-			if (x[i-1] == y[j-1]) {  
-				edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-						edit[(i-1)%3][j-1]);  
-			} else {  
-				if(i >= 2 && j >= 2 && x[i-2] == y[j-1] && x[i-1] == y[j-2]){  
+		int i = 0;  
+		int j = 0;  
+		for(j = 0; j <= ylen; j++){  
+			edit[0][j] = j;  
+		}  
+		for(i = 1; i <= xlen; i++){  
+			edit[i%3][0] = edit[(i-1)%3][0] + 1;  
+			for(j = 1; j <= ylen; j++){  
+				if (x[i-1] == y[j-1]) {  
 					edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-							min(edit[(i-1)%3][j-1] + 1, edit[(i-2)%3][j-2] + 1));  
+							edit[(i-1)%3][j-1]);  
 				} else {  
-					edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-							edit[(i-1)%3][j-1] + 1);  
+					if(i >= 2 && j >= 2 && x[i-2] == y[j-1] && x[i-1] == y[j-2]){  
+						edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
+								min(edit[(i-1)%3][j-1] + 1, edit[(i-2)%3][j-2] + 1));  
+					} else {  
+						edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
+								edit[(i-1)%3][j-1] + 1);  
+					}  
 				}  
 			}  
 		}  
-	}  
-	return edit[(i-1)%3][j-1];  
+		return edit[(i-1)%3][j-1];  
+	}else{
+		int xlen = x.length()/3;  
+		int ylen = y.length()/3;  
+		string tmpx,tmpy,tmpx2,tmpy2;
+		int edit[3][30+1];  
+		memset(edit, 0, sizeof(edit));  
+
+		int i = 0;  
+		int j = 0;  
+		for(j = 0; j <= ylen; j++){  
+			edit[0][j] = j;  
+		}  
+		for(i = 1; i <= xlen; i++){  
+			edit[i%3][0] = edit[(i-1)%3][0] + 1;  
+			for(j = 1; j <= ylen; j++){  
+				tmpx = x.substr(3*(i-1),3);
+				tmpy = y.substr(3*(j-1),3);
+				if (tmpx == tmpy) {  
+					edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
+							edit[(i-1)%3][j-1]);  
+				} else {  
+					if(i >= 2 && j >= 2 && x.substr(3*(i-2),3)==tmpy && tmpx == y.substr(3*(j-2),3)){ 
+						tmpx2 = x.substr(3*(i-2),3);
+						tmpy2 = y.substr(3*(j-2),3);
+						if(tmpx2 == tmpy && tmpx == tmpy2){  
+							edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
+									min(edit[(i-1)%3][j-1] + 1, edit[(i-2)%3][j-2] + 1));  
+						}
+					} else {  
+						edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
+								edit[(i-1)%3][j-1] + 1);  
+					}  
+				}  
+			}  
+		}  
+		return edit[(i-1)%3][j-1];  
+	}	
 }  
 //
-struct MyResult{
+int three_min(int a,int b,int c){
+	int tmp = a<b?a:b;
+	return tmp<c?tmp:c;
+}
+int editDistance(string str1,string str2)  
+{  
+	if(str1[0]>96&&str1[0]<123){//英文
+		int len1 = str1.size();
+		int len2 = str2.size();
+		int **d=new int*[len1+1];  
+		for(int i=0;i<=len1;i++)  
+			d[i]=new int[len2+1];  
+		int i,j;  
+		for(i=0;i<=len1;i++)  
+			d[i][0]=i;  
+		for(j=0;j<=len2;j++)  
+			d[0][j]=j;  
+		for(i=1;i<=len1;i++)  
+		{  
+			for(j=1;j<=len2;j++)  
+			{  
+				int cost=str1[i]==str2[j]?0:1;  
+				int deletion=d[i-1][j]+1;  
+				int insertion=d[i][j-1]+1;  
+				int substitution=d[i-1][j-1]+cost;  
+				d[i][j]=three_min(deletion,insertion,substitution);  
+			}  
+		}  
+		int tmp = d[len1][len2];
+		for(int i=0;i<=len1;i++)  
+		{  
+			delete[] d[i];  
+		}  
+		delete[] d;  
+		return tmp;
+	}else{
+		int len1 = str1.size()/3;
+		int len2 = str2.size()/3;
+		string tmp1,tmp2;
+		int **d=new int*[len1+1];  
+		for(int i=0;i<=len1;i++)  
+			d[i]=new int[len2+1];  
+		int i,j;  
+		for(i=0;i<=len1;i++)  
+			d[i][0]=i;  
+		for(j=0;j<=len2;j++)  
+			d[0][j]=j;  
+		for(i=1;i<=len1;i++)  
+		{  
+			for(j=1;j<=len2;j++)  
+			{  
+				tmp1 = str1.substr(3*(i),3);
+				tmp2 = str2.substr(3*(j),3);
+				int cost=tmp1==tmp2?0:1;  
+				int deletion=d[i-1][j]+1;  
+				int insertion=d[i][j-1]+1;  
+				int substitution=d[i-1][j-1]+cost;  
+				d[i][j]=three_min(deletion,insertion,substitution);  
+			}  
+		}  
+		int tmp = d[len1][len2];
+		for(int i=0;i<=len1;i++)  
+		{  
+			delete[] d[i];  
+		}  
+		delete[] d;  
+		return tmp;
+	}
+}  
+//
+struct MyResult{//每一个候选词的结果类
 	string _word;//候选词
 	int _iFreq;//词频
 	int _iDist;//与查询词的最小编辑距离
 };
 
-auto MyCompare = [](const MyResult & rhs,const MyResult & lhs){
+auto MyCompare = [](const MyResult & rhs,const MyResult & lhs){//MyResult的比较
 	//lhs更接近则返回true
 	unsigned long i = 0;
 	if(lhs._iDist < rhs._iDist)
@@ -88,7 +171,7 @@ auto MyCompare = [](const MyResult & rhs,const MyResult & lhs){
 		else if(lhs._iFreq < rhs._iFreq)
 			return false;
 		else{
-			while(i<lhs._word.size()&&i<rhs._word.size()){
+			while(i<lhs._word.size()&&i<rhs._word.size()){//这里对中文有问题吗？试试
 				if(lhs._word[i] < rhs._word[i])
 					return true;
 				else
@@ -114,56 +197,91 @@ class Task
 		{
 			cout << "> task is processing" << endl;
 			//_conn->send(_queury);//如果直接去使用send，在计算线程里面完成了数据发送,不可取
+			//在这里，先去缓存里查，查到的话直接最后一步发送
+			//在这个计算线程里，只需要去拿一个cache
+			//线程id是唯一的，调用pthread_self()返回的id肯定是不一样的
+			//可以建立一个pthread_t到cache的一个映射
+			//或
+			//用cachemanager类管理，即要用的方法
+			//或
+			//利用线程局部存储的方式
+			redisContext *rc = redisConnect("127.0.0.1",6379);
+			redisReply *r = (redisReply*)redisCommand(rc,"get %s",_queury.c_str());
+			if (NULL == r) {
+				printf("Redis Command error []\n");
+				redisFree(rc);  
+				return;
+			}   
+			if (r->type == REDIS_REPLY_ERROR ) { 
+				printf("Redis Command[], error:%s\n", r->str);
+				freeReplyObject(r);
+				redisFree(rc);  
+				return;
+			}  
+			if(r->str){//在缓存里有，在这里直接返回
+				_conn->sendInLoop(r->str);
+				cout << "get from redis" << endl;
+				return;
+			}
 			Configuration myconf("../conf/my.conf");
-			//		cout << "after conf" << endl;
-			auto mydict = Mydict::createInstance();
-			//		cout << "after Mydict create" << endl;
-			string dictenpath = myconf.getConfigMap()["mydict"].c_str();
-			string indexenpath = myconf.getConfigMap()["myindex"].c_str();
-			mydict->init(myconf.getConfigMap()["mydict"].c_str(),myconf.getConfigMap()["myindex"].c_str());//初始化词典及索引
-			//		cout << "after Mydict init" << endl;
+			auto mydict = Mydict::createInstance();//词典单例模式的创建
+			string dictenpath = myconf.getConfigMap()["mydict"].c_str();//获取词典路径
+			string indexenpath = myconf.getConfigMap()["myindex"].c_str();//获取索引路径
+			string dictcnpath = myconf.getConfigMap()["mydictcn"].c_str();//获取中文词典路径
+			string indexcnpath = myconf.getConfigMap()["myindexcn"].c_str();//获取中文索引路径
+			mydict->init(myconf.getConfigMap()["mydict"].c_str(),myconf.getConfigMap()["myindex"].c_str(),myconf.getConfigMap()["mydictcn"].c_str(),myconf.getConfigMap()["myindexcn"].c_str());//初始化词典及索引
+			cout << "after init" << endl;
 			int j = _queury.size();
 			string ctmp;
 			MyResult myresult;
 			set<int> tmp_hebing;
-			//		cout << _queury << "'s size = " << j << endl;
-			while(--j>=0){
-				ctmp = _queury[j];
-				//有重复字母时没有查重
-				//			set_union(tmp_hebing.begin(),tmp_hebing.end(),mydict->getIndexTable()[ctmp].begin(),mydict->getIndexTable()[ctmp].end(),back_inserter(tmp_hebing));
-				tmp_hebing.insert(mydict->getIndexTable()[ctmp].begin(),mydict->getIndexTable()[ctmp].end());
-				//			for(auto linenum : (mydict->getIndexTable())[ctmp]){
-				//				myresult._word = mydict->getDict()[linenum].first;
-				//				myresult._iFreq = mydict->getDict()[linenum].second;
-				//				myresult._iDist = Min_Edit_Distance(_queury,myresult._word);
-				//			cout << myresult._word << " " << myresult._iFreq << " " << myresult._iDist << endl;
-				//			_resultQue.push(myresult);
-				//			}
+			if(_queury[0]>96&&_queury[0]<123){//英文
+				while((--j)>=0){
+					ctmp = _queury[j];//有重复字母时没有查重
+					tmp_hebing.insert(mydict->getIndexTable()[ctmp].begin(),mydict->getIndexTable()[ctmp].end());
+				}
+			}else{
+				for(int i = 0;i<j;i+=3){
+					ctmp = _queury.substr(i,3);//有重复字母时没有查重
+					cout << " ctmp = " << ctmp << endl;
+					tmp_hebing.insert(mydict->getIndexTable()[ctmp].begin(),mydict->getIndexTable()[ctmp].end());
+				}
+				for(auto every : tmp_hebing){
+					cout << every << " ";
+				}
+				cout << endl;
 			}
-			//		cout << "hebing finish" << endl;
-			//		合并很快的，主要是下面的部分慢
+			cout << "after hebing" << endl;
+			//合并很快的，主要是下面的部分慢，不用那个递归就好了
 			int suduceshi = 0;
 			for(auto linenum : tmp_hebing){
 				myresult._word = mydict->getDict()[linenum].first;
+				cout << "_word = " << myresult._word << endl;
 				myresult._iFreq = mydict->getDict()[linenum].second;
-				//myresult._iDist = Min_Edit_Distance(_queury,myresult._word);
+				cout << "before edit_length" << endl;
 				myresult._iDist = edit_length(_queury,myresult._word);
-				//			cout << myresult._word << " " << myresult._iFreq << " " << myresult._iDist << endl;
+//				myresult._iDist = editDistance(_queury,myresult._word);
+				cout << "after edit_length" << endl;
 				_resultQue.push(myresult);
 				++suduceshi;
-				if(!(suduceshi%100))
-					//			数量增长不多，应该是MED算法耗时增加
+				if(!(suduceshi%1000))
 					cout << suduceshi << endl;
 			}
-
+			if(_resultQue.empty()){
+				_conn->sendInLoop(" ");
+				return;
+			}
 			string result5;
 			int i = 6;//把头5个相似词传给客户端
 			while(--i){
 				result5 = result5 + _resultQue.top()._word;
+				result5 = result5 + to_string(_resultQue.top()._iDist);
 				result5 = result5 + " ";
 				_resultQue.pop();
+				if(_resultQue.empty())
+					break;
 			}
-			//
+			redisCommand(rc,"set %s %s",_queury.c_str(),result5.c_str());//放进缓存
 			_conn->sendInLoop(result5);
 		}
 	private:

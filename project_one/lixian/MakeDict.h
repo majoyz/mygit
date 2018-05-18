@@ -7,6 +7,9 @@
 #ifndef __WD_MAKEDICT_H__
 #define __WD_MAKEDICT_H__
 
+#include "SplitTool.h"
+#include "cppjieba/include/cppjieba/Jieba.hpp"
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -19,24 +22,27 @@
 #include <unordered_map>
 using namespace std;
 
-class TextQuery{
+class DictProducer{
 	public:
-		using line_no = vector<string>::size_type;//size_type是unsigned int型的，是容器的大小
-		TextQuery(string &,string &);//构造函数，输入一个文件流
-		void addBinTxt(ifstream &);
-		void makeDict();
-		void makeQDict();
-		vector<pair<string,int>> & get_qdict();
-		void makeIndex();
-		void indexFile();
+		DictProducer(string &,string &);//构造函数，输入一个文件流
+		DictProducer(string &,string &,SplitTool *);//构造函数，处理中文
+		void makeDict(ifstream &);//产生map词典
+		void make_cn_Dict(ifstream &);//产生中文词典
+		void dictFile();//产生词典文件
+		void dict_cn_File();
+		void makeIndex();//产生unordered_map索引
+		void make_cn_Index();
+		void indexFile();//产生索引文件
+		void index_cn_File();
 	private:
 		unordered_map<string,set<int>> _index;
 		shared_ptr<vector<string>> _file; //储存输入文件的每一行
-		map<string,shared_ptr<set<line_no>>> wm;//每个单词到它所在行号的集合的映射
+		map<string,shared_ptr<set<unsigned int>>> _wm;//每个单词到它所在行号的集合的映射
 		map<string,int> _dict;//存储单词词频
-		vector<pair<string,int>> _qdict;//读取时用这个存储词典
+		map<string,int> _dict_cn;
 		string _dictfile;
 		string _indexfile;
+		SplitTool * _splitTool;//分词工具类
 };
 
 int getOnlyWord(string &);//单词处理函数

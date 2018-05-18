@@ -22,13 +22,14 @@ Configuration::Configuration(const string & filepath)
 		string line(tmp);
 		size_t pos = line.find("=");
 		if(pos == string::npos){
-			cout << "read false" << endl;
+			cout << "read false or finish" << endl;
 			return;
 		}
 		tmpkey = line.substr(0,pos);
 		tmpvalue = line.substr(pos+1);
 		_configMap.insert(make_pair(tmpkey,tmpvalue));
 	}
+	fs.close();
 }
 
 map<string,string> & Configuration::getConfigMap(){

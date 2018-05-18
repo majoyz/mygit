@@ -1,7 +1,7 @@
 INC_DIR:= ./
 SRCS:=$(wildcard ./*.cpp)
 OBJS:= $(patsubst %.cpp, %.o, $(SRCS))
-LIBS:= -lpthread
+LIBS:= -lpthread -lhiredis
 
 CXX:=g++
 

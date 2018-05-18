@@ -10,21 +10,33 @@
 
 void makeDict(){
 	Configuration config(CONFPATH);
-	ifstream firText("../bin/english.txt");
-	ifstream secText("../bin/The_Holy_Bible.txt");
-	TextQuery textquery(config.getConfigMap()["mydict"],config.getConfigMap()["myindex"]);
-	textquery.addBinTxt(firText);
-	textquery.addBinTxt(secText);
-	textquery.makeDict();//建立词典文件
-	textquery.makeQDict();//存到vector里面去
+	ifstream firText("../lib/english.txt");
+	ifstream secText("../lib/The_Holy_Bible.txt");
+	DictProducer textquery(config.getConfigMap()["mydict"],config.getConfigMap()["myindex"]);
+	textquery.makeDict(firText);
+	textquery.makeDict(secText);
+	textquery.dictFile();//建立词典文件
 	firText.close();
 	secText.close();
 	textquery.makeIndex();
 	textquery.indexFile();
 }
 
+void makeDict_cn(){
+	Configuration config(CONFPATH);
+	SplitTool *st = new SplitToolCppJieba;
+	ifstream firText("../lib/art/C3-Art0039.txt");
+	DictProducer dpcn(config.getConfigMap()["mydictcn"],config.getConfigMap()["myindexcn"],st);
+	dpcn.make_cn_Dict(firText);
+	dpcn.dict_cn_File();
+	firText.close();
+	dpcn.make_cn_Index();
+	dpcn.index_cn_File();
+}
+
 int main(){
 	makeDict();
+	makeDict_cn();
 	
 	return 0;
 }
