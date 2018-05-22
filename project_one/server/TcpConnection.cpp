@@ -61,7 +61,7 @@ void TcpConnection::shutdown()
 	isShutdownWrite_ = true;
 }
 
-std::string TcpConnection::toString()
+std::string TcpConnection::toString()//在服务器打印连接的客户端地址
 {
 	char str[100];
 	snprintf(str, sizeof(str), "%s:%d -> %s:%d",

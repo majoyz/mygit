@@ -15,7 +15,7 @@
 namespace wd
 {
 
-class InetAddress
+class InetAddress//地址与端口号类
 {
 public:
 	InetAddress(short port);
@@ -33,7 +33,7 @@ private:
 };
 
 
-}// end of namespace wd
+}
 
 
 

@@ -13,7 +13,7 @@
 namespace wd
 {
 
-class Acceptor
+class Acceptor//监听新客户端的连接请求
 {
 public:
 	Acceptor(int listenfd, const InetAddress & addr);

@@ -22,7 +22,7 @@ Acceptor::Acceptor(int listenfd, const InetAddress & addr)
 
 void Acceptor::ready()
 {
-	setReuseAddr(true);
+	setReuseAddr(true);//将地址和端口号设置为可重用的
 	setReusePort(true);
 	bind();
 	listen();
@@ -56,7 +56,6 @@ void Acceptor::setReuseAddr(bool flag)
 
 void Acceptor::setReusePort(bool flag)
 {
-#ifdef SO_REUSEPORT
 	int on = (flag ? 1 : 0);
 	if(::setsockopt(listenSock_.fd(), 
 				    SOL_SOCKET,
@@ -68,13 +67,6 @@ void Acceptor::setReusePort(bool flag)
 		::close(listenSock_.fd());
 		exit(EXIT_FAILURE);
 	}
-#else
-	if(flag)
-	{
-		fprintf(stderr, "SO_REUSEPORT is not supported!\n");
-	}
-#endif
-
 }
 
 void Acceptor::bind()

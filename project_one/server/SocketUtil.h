@@ -3,7 +3,7 @@
  /// @author  lemon(haohb13@gmail.com)
  /// @date    2017-05-11 19:00:58
  ///
- 
+//与socket相关的通用类 
 #ifndef __WD_SOCKETUTIL_H__
 #define __WD_SOCKETUTIL_H__
 
@@ -35,8 +35,8 @@ inline int createSocketFd()
 
 inline void setNonblock(int fd)
 {
-	int flags = ::fcntl(fd, F_GETFL, 0);
-	flags |= O_NONBLOCK;
+	int flags = ::fcntl(fd, F_GETFL, 0);//通过fcntl改变fd的属性
+	flags |= O_NONBLOCK;//加入非阻塞属性，也可以创建时通过SOCK_STREAM|SOCK_NONBLOCK来设置
 	::fcntl(fd, F_SETFL, flags);
 }
 

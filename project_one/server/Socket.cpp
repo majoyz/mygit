@@ -33,7 +33,7 @@ void Socket::nonblock()
 
 void Socket::shutdownWrite()
 {
-	if(::shutdown(sockfd_, SHUT_WR) == -1)
+	if(::shutdown(sockfd_, SHUT_WR) == -1)//close以外另一种关闭sockfd的方式，二参数是关闭方式，用关闭写端
 	{
 		perror("shudown write error!");
 	}

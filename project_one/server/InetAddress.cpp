@@ -20,7 +20,7 @@ InetAddress::InetAddress(short port)
 	::memset(&addr_, 0, sizeof(addr_));
 	addr_.sin_family = AF_INET;
 	addr_.sin_port = htons(port);
-	addr_.sin_addr.s_addr = INADDR_ANY;
+	addr_.sin_addr.s_addr = INADDR_ANY;//默认为本机ip地址
 }
 
 

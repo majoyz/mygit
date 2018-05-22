@@ -12,7 +12,7 @@
 namespace wd
 {
 class InetAddress;
-class Socket : Noncopyable
+class Socket : Noncopyable//不可复制
 {
 public:
 	Socket(int sockfd);
@@ -24,7 +24,7 @@ public:
 
 	void nonblock();
 
-	static InetAddress getLocalAddr(int sockfd);
+	static InetAddress getLocalAddr(int sockfd);//静态函数，也可以放到通用类SocketUtil里
 	static InetAddress getPeerAddr(int sockfd);
 private:
 	int sockfd_;

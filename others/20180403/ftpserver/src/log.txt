@@ -1,0 +1,95 @@
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :cd 2018
+user xiaohong :pwd
+user xiaohong :ls
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :cd 2018
+user xiaohong :ls
+user xiaohong :puts file
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :cd 2018
+user xiaohong :ls
+user  long in
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :puts file
+user xiaohong :ls
+user xiaohong :cd 2018
+user xiaohong :ls
+user xiaohong :pwd
+user xiaohong :cd 0330
+user xiaohong :ls
+user xiaohong :puts file
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :puts file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :remove file
+user xiaohong :remove file
+user xiaohong :remove file
+user xiaohong :ls
+user xiaohong :puts file
+user xiaohong :ls
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :remove file
+user xiaohong :ls
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :puts file1
+user xiaohong :ls
+user xiaohong long in
+user xiaohong long in
+user xiaohong :ls
+user xiaohong long in
+user xiaohong :ls
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file
+user xiaohong long in
+user xiaohong :ls
+user xiaohong long in
+user xiaohong :gets file1
+user xiaohong long in
+user xiaohong :ls
+user xiaohong :gets file1
+user xiaohong :ls
+user  long in
+user xiaozhang long in
+user xiaozhang :ls
+user xiaozhang :mkdir 2018
+user xiaozhang :ls
+user xiaozhang :puts file1
+user xiaozhang :gets file1

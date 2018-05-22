@@ -19,7 +19,6 @@
 namespace wd
 {
 
-
 class EpollPoller;
 class TcpConnection;
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
@@ -32,12 +31,12 @@ public:
 	TcpConnection(int sockfd, EpollPoller * loop);
 	~TcpConnection();
 
-	std::string receive();
-	void send(const std::string & msg);
+	std::string receive();//接收
+	void send(const std::string & msg);//发送
 	void sendInLoop(const std::string & msg);
-	void shutdown();
+	void shutdown();//关闭，内部调用socket的shutdown方法
 
-	std::string toString();
+	std::string toString();//用来打印从哪里到哪里（ip地址端口号）
 
 	void setConnectionCallback(TcpConnectionCallback cb);
 	void setMessageCallback(TcpConnectionCallback cb);

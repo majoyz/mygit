@@ -13,42 +13,41 @@
 using std::cout;
 using std::endl;
 
-int edit_length(string &x, string &y){ //秒查的最小编辑距离算法 
+int edit_length(string &x, string &y){ //Damerau-Levenstein最小编辑距离算法，动态规划 
 	if(x[0]>96&&x[0]<123){//英文
-		int xlen = x.length();  
-		int ylen = y.length();  
-		int edit[3][30+1];  
-		memset(edit, 0, sizeof(edit));  
-
-		int i = 0;  
-		int j = 0;  
-		for(j = 0; j <= ylen; j++){  
-			edit[0][j] = j;  
-		}  
-		for(i = 1; i <= xlen; i++){  
-			edit[i%3][0] = edit[(i-1)%3][0] + 1;  
-			for(j = 1; j <= ylen; j++){  
-				if (x[i-1] == y[j-1]) {  
-					edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-							edit[(i-1)%3][j-1]);  
-				} else {  
-					if(i >= 2 && j >= 2 && x[i-2] == y[j-1] && x[i-1] == y[j-2]){  
-						edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-								min(edit[(i-1)%3][j-1] + 1, edit[(i-2)%3][j-2] + 1));  
-					} else {  
-						edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-								edit[(i-1)%3][j-1] + 1);  
-					}  
-				}  
-			}  
-		}  
-		return edit[(i-1)%3][j-1];  
-	}else{
-		int xlen = x.length()/3;  
-		int ylen = y.length()/3;  
+		int xlen = x.length();
+		int ylen = y.length();
+		int edit[xlen+1][ylen+1];
+		memset(edit, 0, sizeof(edit));
+		int i = 0;
+		int j = 0;
+		for(j = 0; j <= ylen; j++){ 
+			edit[0][j] = j;
+		}
+		for(i = 1; i <= xlen; i++){
+			edit[i][0] = edit[i-1][0] + 1;
+			for(j = 1; j <= ylen; j++){
+				if (x[i-1] == y[j-1]) {
+					edit[i][j] = min(min(edit[i][j-1] + 1, edit[i-1][j] + 1),
+							edit[i-1][j-1]);
+				} else {
+					if(i >= 2 && j >= 2 && x[i-2] == y[j-1] && x[i-1] == y[j-2]){
+						edit[i][j] = min(min(edit[i][j-1] + 1, edit[i-1][j] + 1),
+								min(edit[i-1][j-1] + 1, edit[i-2][j-2] + 1));
+					} else {
+						edit[i][j] = min(min(edit[i][j-1] + 1, edit[i-1][j] + 1),
+								edit[i-1][j-1] + 1);
+					}
+				}
+			}
+		}
+		return edit[i-1][j-1];
+	}else{//中文
+		int xlen = x.length()/3;
+		int ylen = y.length()/3;
 		string tmpx,tmpy,tmpx2,tmpy2;
-		int edit[3][30+1];  
-		memset(edit, 0, sizeof(edit));  
+		int edit[xlen+1][ylen+1];
+		memset(edit, 0, sizeof(edit));
 
 		int i = 0;  
 		int j = 0;  
@@ -56,102 +55,32 @@ int edit_length(string &x, string &y){ //秒查的最小编辑距离算法
 			edit[0][j] = j;  
 		}  
 		for(i = 1; i <= xlen; i++){  
-			edit[i%3][0] = edit[(i-1)%3][0] + 1;  
+			edit[i][0] = edit[i-1][0] + 1;  
 			for(j = 1; j <= ylen; j++){  
 				tmpx = x.substr(3*(i-1),3);
 				tmpy = y.substr(3*(j-1),3);
-				if (tmpx == tmpy) {  
-					edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-							edit[(i-1)%3][j-1]);  
-				} else {  
-					if(i >= 2 && j >= 2 && x.substr(3*(i-2),3)==tmpy && tmpx == y.substr(3*(j-2),3)){ 
+				if (tmpx == tmpy) {
+					edit[i][j] = min(min(edit[i][j-1] + 1, edit[i-1][j] + 1),
+							edit[i-1][j-1]);
+				} else {
+					if(i >= 2 && j >= 2 && x.substr(3*(i-2),3)==tmpy && tmpx == y.substr(3*(j-2),3)){
 						tmpx2 = x.substr(3*(i-2),3);
 						tmpy2 = y.substr(3*(j-2),3);
-						if(tmpx2 == tmpy && tmpx == tmpy2){  
-							edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-									min(edit[(i-1)%3][j-1] + 1, edit[(i-2)%3][j-2] + 1));  
+						if(tmpx2 == tmpy && tmpx == tmpy2){
+							edit[i][j] = min(min(edit[i][j-1] + 1, edit[i-1][j] + 1),
+									min(edit[i-1][j-1] + 1, edit[i-2][j-2] + 1));
 						}
-					} else {  
-						edit[i%3][j] = min(min(edit[i%3][j-1] + 1, edit[(i-1)%3][j] + 1),  
-								edit[(i-1)%3][j-1] + 1);  
-					}  
-				}  
-			}  
-		}  
-		return edit[(i-1)%3][j-1];  
-	}	
-}  
-//
-int three_min(int a,int b,int c){
-	int tmp = a<b?a:b;
-	return tmp<c?tmp:c;
-}
-int editDistance(string str1,string str2)  
-{  
-	if(str1[0]>96&&str1[0]<123){//英文
-		int len1 = str1.size();
-		int len2 = str2.size();
-		int **d=new int*[len1+1];  
-		for(int i=0;i<=len1;i++)  
-			d[i]=new int[len2+1];  
-		int i,j;  
-		for(i=0;i<=len1;i++)  
-			d[i][0]=i;  
-		for(j=0;j<=len2;j++)  
-			d[0][j]=j;  
-		for(i=1;i<=len1;i++)  
-		{  
-			for(j=1;j<=len2;j++)  
-			{  
-				int cost=str1[i]==str2[j]?0:1;  
-				int deletion=d[i-1][j]+1;  
-				int insertion=d[i][j-1]+1;  
-				int substitution=d[i-1][j-1]+cost;  
-				d[i][j]=three_min(deletion,insertion,substitution);  
-			}  
-		}  
-		int tmp = d[len1][len2];
-		for(int i=0;i<=len1;i++)  
-		{  
-			delete[] d[i];  
-		}  
-		delete[] d;  
-		return tmp;
-	}else{
-		int len1 = str1.size()/3;
-		int len2 = str2.size()/3;
-		string tmp1,tmp2;
-		int **d=new int*[len1+1];  
-		for(int i=0;i<=len1;i++)  
-			d[i]=new int[len2+1];  
-		int i,j;  
-		for(i=0;i<=len1;i++)  
-			d[i][0]=i;  
-		for(j=0;j<=len2;j++)  
-			d[0][j]=j;  
-		for(i=1;i<=len1;i++)  
-		{  
-			for(j=1;j<=len2;j++)  
-			{  
-				tmp1 = str1.substr(3*(i),3);
-				tmp2 = str2.substr(3*(j),3);
-				int cost=tmp1==tmp2?0:1;  
-				int deletion=d[i-1][j]+1;  
-				int insertion=d[i][j-1]+1;  
-				int substitution=d[i-1][j-1]+cost;  
-				d[i][j]=three_min(deletion,insertion,substitution);  
-			}  
-		}  
-		int tmp = d[len1][len2];
-		for(int i=0;i<=len1;i++)  
-		{  
-			delete[] d[i];  
-		}  
-		delete[] d;  
-		return tmp;
+					} else {
+						edit[i][j] = min(min(edit[i][j-1] + 1, edit[i-1][j] + 1),
+								edit[i-1][j-1] + 1);
+					}
+				}
+			}
+		}
+		return edit[i-1][j-1];
 	}
-}  
-//
+}
+
 struct MyResult{//每一个候选词的结果类
 	string _word;//候选词
 	int _iFreq;//词频
@@ -230,7 +159,6 @@ class Task
 			string dictcnpath = myconf.getConfigMap()["mydictcn"].c_str();//获取中文词典路径
 			string indexcnpath = myconf.getConfigMap()["myindexcn"].c_str();//获取中文索引路径
 			mydict->init(myconf.getConfigMap()["mydict"].c_str(),myconf.getConfigMap()["myindex"].c_str(),myconf.getConfigMap()["mydictcn"].c_str(),myconf.getConfigMap()["myindexcn"].c_str());//初始化词典及索引
-			cout << "after init" << endl;
 			int j = _queury.size();
 			string ctmp;
 			MyResult myresult;
@@ -251,17 +179,13 @@ class Task
 				}
 				cout << endl;
 			}
-			cout << "after hebing" << endl;
 			//合并很快的，主要是下面的部分慢，不用那个递归就好了
 			int suduceshi = 0;
 			for(auto linenum : tmp_hebing){
 				myresult._word = mydict->getDict()[linenum].first;
-				cout << "_word = " << myresult._word << endl;
 				myresult._iFreq = mydict->getDict()[linenum].second;
-				cout << "before edit_length" << endl;
 				myresult._iDist = edit_length(_queury,myresult._word);
 //				myresult._iDist = editDistance(_queury,myresult._word);
-				cout << "after edit_length" << endl;
 				_resultQue.push(myresult);
 				++suduceshi;
 				if(!(suduceshi%1000))
