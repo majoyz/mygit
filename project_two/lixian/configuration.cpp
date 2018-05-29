@@ -22,7 +22,7 @@ Configuration::Configuration(const string & filepath)
 		string line(tmp);
 		size_t pos = line.find("=");
 		if(pos == string::npos){
-			cout << "read false" << endl;
+			cout << "read finish or false" << endl;
 			return;
 		}
 		tmpkey = line.substr(0,pos);
