@@ -26,12 +26,12 @@ class PageLibPreprocessor{
 //		void cutRedundantPages();//对冗余的网页进行去重
 //		void buildInvertIndexTable();//创建倒排索引表
 //		void storeOnDisk();//将经过预处理之后的网页库、位置偏移库和倒排索引表写回到磁盘上
-//	private:
+	private:
 		Configuration & _conf;//配置文件对象的引用
-		//SplitToolCppJieba _jieba;//分词对象
-//		vector<WebPage> _pageLib;//网页库的容器对象
-//		unordered_map<int,pair<int,int>> _offsetLib;//网页偏移库对象
-//		unordered_map<string,vector<pair<int,double>>> _invertIndexTable;//倒排索引表对象
+		SplitToolCppJieba _jieba;//分词对象
+		vector<WebPage> _pageLib;//网页库的容器对象
+		unordered_map<int,pair<int,int>> _offsetLib;//网页偏移库对象
+		unordered_map<string,vector<pair<int,double>>> _invertIndexTable;//倒排索引表对象
 };
 
 #endif

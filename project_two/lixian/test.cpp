@@ -5,13 +5,13 @@
  ///
  
 #include "pageLibPreprocessor.h"
-//#include "pageLib.h"
+#include "pageLib.h"
 using namespace std;
 
 int main(){
 	cout << "what?" << endl;
 	Configuration conf("../conf/my.conf");
-#if 0
+#if 1
 	DirScanner ds(conf);
 	ds();
 	PageLib pl(conf,ds);

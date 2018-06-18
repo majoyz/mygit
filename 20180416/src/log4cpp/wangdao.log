@@ -1,0 +1,40 @@
+[2018-04-16 15:03:53,145] [INFO] [] :info message
+[2018-04-16 15:03:53,145] [WARN] [] :warn message
+[2018-04-16 15:03:53,145] [ERROR] [] :error message
+[2018-04-16 15:03:53,146] [DEBUG] [] :debug message
+[2018-04-16 15:04:26,134] [INFO] :info message
+[2018-04-16 15:04:26,135] [WARN] :warn message
+[2018-04-16 15:04:26,135] [ERROR] :error message
+[2018-04-16 15:04:26,135] [DEBUG] :debug message
+[2018-04-16 15:09:54,474] [INFO] :info message
+[2018-04-16 15:09:54,475] [WARN] :warn message
+[2018-04-16 15:09:54,475] [ERROR] :error message
+[2018-04-16 15:09:54,475] [DEBUG] :debug message
+[2018-04-16 15:12:59,314] [INFO] :info message
+[2018-04-16 15:12:59,315] [WARN] :warn message
+[2018-04-16 15:12:59,315] [ERROR] :error message
+[2018-04-16 15:12:59,315] [DEBUG] :debug message
+[2018-04-16 15:13:44,905] [INFO] :info message
+[2018-04-16 15:13:44,905] [WARN] :warn message
+[2018-04-16 15:13:44,905] [ERROR] :error message
+[2018-04-16 15:13:44,905] [DEBUG] :debug message
+[2018-04-16 15:20:20,352] [INFO] :wangdao.log
+[2018-04-16 15:20:20,353] [WARN] :[TestMylogger.cc:prefix:27]warn message
+[2018-04-16 15:20:20,353] [ERROR] :[TestMylogger.cc:prefix:27]error message
+[2018-04-16 15:20:20,354] [DEBUG] :[TestMylogger.cc:prefix:27]debug message
+[2018-04-16 15:23:55,237] [INFO] :[TestMylogger.cc:test2:52]info message
+[2018-04-16 15:23:55,237] [WARN] :[TestMylogger.cc:test2:53]warn message
+[2018-04-16 15:23:55,237] [ERROR] :[TestMylogger.cc:test2:54]error message
+[2018-04-16 15:23:55,238] [DEBUG] :[TestMylogger.cc:test2:55]debug message
+[2018-04-16 15:24:30,983] [INFO] [TestMylogger.cc:test2:52] :info message
+[2018-04-16 15:24:30,984] [WARN] [TestMylogger.cc:test2:53] :warn message
+[2018-04-16 15:24:30,985] [ERROR] [TestMylogger.cc:test2:54] :error message
+[2018-04-16 15:24:30,985] [DEBUG] [TestMylogger.cc:test2:55] :debug message
+[2018-04-16 15:30:13,033] [INFO] [TestMylogger.cc:test2:39] :info message
+[2018-04-16 15:30:13,039] [WARN] [TestMylogger.cc:test2:40] :warn message
+[2018-04-16 15:30:13,040] [ERROR] [TestMylogger.cc:test2:41] :error message
+[2018-04-16 15:30:13,040] [DEBUG] [TestMylogger.cc:test2:42] :debug message
+[2018-04-16 15:30:47,479] [WARN] [TestMylogger.cc:test3:49] :warn message
+[2018-04-16 15:30:47,480] [ERROR] [TestMylogger.cc:test3:50] :error message
+[2018-04-16 15:30:47,481] [INFO] [TestMylogger.cc:test3:51] :info message
+[2018-04-16 15:30:47,481] [DEBUG] [TestMylogger.cc:test3:52] :debug message

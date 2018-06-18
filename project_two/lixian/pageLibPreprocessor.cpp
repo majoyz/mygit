@@ -13,7 +13,7 @@
 PageLibPreprocessor::PageLibPreprocessor(Configuration & conf)
 :_conf(conf)
 {}
-
+//
 void PageLibPreprocessor::doProcess(){
 	readInfoFromFile();
 //	cutRedundantPages();
@@ -22,7 +22,7 @@ void PageLibPreprocessor::doProcess(){
 //	void storeOnDisk();
 }
 
-#if 1
+#if 0
 void PageLibPreprocessor::readInfoFromFile(){
 	string s = "ceshi";
 	cout << "before " << s << endl;
@@ -30,22 +30,22 @@ void PageLibPreprocessor::readInfoFromFile(){
 	cout << "after " << s << endl;
 }
 #endif
-#if 0
+#if 1
 void PageLibPreprocessor::readInfoFromFile(){
-	ifstream ifsrp(_conf.getConfigMap()["myripepagelib"]);
-	ifstream ifsos(_conf.getConfigMap()["myoffsetlib"]);
+	ifstream ifsripepage(_conf.getConfigMap()["myripepagelib"]);
+	ifstream ifsoffset(_conf.getConfigMap()["myoffsetlib"]);
 	string tmpoffset;
 	int docid,tmpstart,tmpsize;
 	Simhasher simhasher("../dict/jieba.dict.utf8", "../dict/hmm_model.utf8", "../dict/idf.utf8", "../dict/stop_words.utf8");
-	while(getline(ifsos,tmpoffset)){
+	while(getline(ifsoffset,tmpoffset)){
 		stringstream ss(tmpoffset);
 		ss >> docid;
 		ss >> tmpstart;
 		ss >> tmpsize;
 		string tmpdoc(tmpsize,'\0');
-		ifsrp.read(&tmpdoc[0],tmpsize);
-		WebPage tmpWeb(tmpdoc/*,simhasher,_jieba*/);
-		_pageLib.push_back(tmpWeb);
+		ifsripepage.read(&tmpdoc[0],tmpsize);
+		WebPage tmpWeb(tmpdoc,simhasher,_jieba);
+//		_pageLib.push_back(tmpWeb);
 	}
 }
 #endif

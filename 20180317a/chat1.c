@@ -60,7 +60,7 @@ int main(){
 	int shmid=shmget(1023,4096,0600|IPC_CREAT);
 	struct send *p=(struct send *)shmat(shmid,NULL,0);
 	//得到共享内存指针
-	int fdr=open(argv2,O_RDONLY);
+	int fdr=open(argv2,O_RDONLY);//没有O_NONBLOCK时会阻塞到对面对应的写端打开为止，写端同理
 	if(fdr==-1){
 		perror("open1");
 		return -1;
